@@ -112,6 +112,15 @@ defmodule Mogrify do
     image
   end
 
+  @doc """
+  get image's orientation
+  """
+  def orientation(image) do
+    {output, 0} = identify(image.path, "format", "'%[exif:orientation]'")
+    info = Regex.named_captures(~r/\'(?<orientation>\d+)\'/, output)
+    Map.put(image, :orientation, Map.get(info, "orientation"))
+  end
+
   def auto_orient(image) do
     run image.path, "auto-orient"
     image
@@ -125,5 +134,10 @@ defmodule Mogrify do
   defp run(path, option, params \\ nil) do
     args = ~w(-#{option} #{params} #{String.replace(path, " ", "\\ ")})
     System.cmd "mogrify", args, stderr_to_stdout: true
+  end
+
+  defp identify(path, option, params \\ nil) do
+    args = ~w(-#{option} #{params} #{String.replace(path, " ", "\\ ")})
+    System.cmd "identify", args, stderr_to_stdout: true
   end
 end

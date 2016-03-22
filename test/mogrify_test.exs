@@ -6,6 +6,7 @@ defmodule MogrifyTest do
 
   @fixture Path.join(__DIR__, "fixtures/bender.jpg")
   @fixture_with_space Path.join(__DIR__, "fixtures/ben der.jpg")
+  @fixture_bear Path.join(__DIR__, "fixtures/bear.jpg")
 
   test ".open" do
     image = open("./test/fixtures/bender.jpg")
@@ -66,5 +67,10 @@ defmodule MogrifyTest do
   test ".extent" do
     image = open(@fixture) |> copy |> extent("500x500")
     assert %Image{width: "500", height: "500"} = image
+  end
+
+  test ".orientation" do
+    image = open(@fixture_bear) |> orientation
+    assert %Image{orientation: "6"} = image
   end
 end
